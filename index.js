@@ -46,6 +46,18 @@ const addList = () => {
 
 todoButton.addEventListener('click', addList);
 
+const completeTodo = (uid) => {
+    const index = todos.findIndex(x => x.id === uid);
+    todos[index].status = 'done';
+    renderTodos();
+}
+
+const doingTodo = (uid) => {
+    const index = todos.findIndex(x => x.id === uid);
+    todos[index].status = 'doing';
+    renderTodos();
+}
+
 const renderList = (list, mainList) => {
     list.forEach((todo) => {
         const todoItem = document.createElement('li');

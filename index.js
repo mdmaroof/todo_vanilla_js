@@ -1,9 +1,27 @@
-let todos = [];
+let todos = [
+    {
+        "id": 1,
+        "title": "first title",
+        "description": "first description",
+        "endDate": "2024-02-23",
+        "status": "todo",
+        "priority": 3
+    },
+    {
+        "id": 2,
+        "title": "second title",
+        "description": "second description",
+        "endDate": "2024-02-28",
+        "status": "todo",
+        "priority": 2
+    }
+];
 
 const addTodo = (title, description, endDate) => {
     const priority = Math.floor(Math.random() * 3) + 1;
     const todo = { id: todos.length + 1, title, description, endDate, status: 'todo', priority: priority };
     todos.push(todo);
+    renderTodos();
 }
 
 const newTitle = document.getElementById('todoTitle');
@@ -27,3 +45,135 @@ const addList = () => {
 }
 
 todoButton.addEventListener('click', addList);
+
+const renderList = (list, mainList) => {
+    list.forEach((todo) => {
+        const todoItem = document.createElement('li');
+        const wrapper = document.createElement('div');
+        const titleElement = document.createElement('div');
+        titleElement.classList.add('title');
+        titleElement.textContent = `Title : ${todo.title}`;
+
+        const descriptionElement = document.createElement('div');
+        descriptionElement.classList.add('description');
+        descriptionElement.textContent = `Description : ${todo.description}`;
+
+
+
+        const endDateElement = document.createElement('div');
+        endDateElement.classList.add('endDate');
+        endDateElement.textContent = `End Date : ${todo.endDate}`;
+
+        const statusElement = document.createElement('div');
+        statusElement.classList.add('status');
+        statusElement.textContent = `Status : ${todo.status}`;
+
+        const priorityElement = document.createElement('div');
+        priorityElement.classList.add('priority');
+        priorityElement.textContent = `Priority : ${todo.priority === 1 && 'low' || todo.priority === 2 && 'medium' || todo.priority === 3 && 'high'}`;
+
+        const textViewElement = document.createElement('div');
+        textViewElement.classList.add('text-view');
+
+        textViewElement.appendChild(titleElement);
+        textViewElement.appendChild(descriptionElement);
+        textViewElement.appendChild(endDateElement);
+        textViewElement.appendChild(statusElement);
+        textViewElement.appendChild(priorityElement);
+
+        const buttonsElement = document.createElement('div');
+        buttonsElement.classList.add('button-view');
+
+        const editButton = document.createElement('button');
+        editButton.textContent = 'Edit';
+        editButton.classList.add('edit-button');
+        editButton.addEventListener('click', () => {
+            const editInput = document.createElement('input');
+            editInput.value = todo.title;
+
+            const editDescription = document.createElement('input');
+            editDescription.value = todo.description;
+
+            const endDate = document.createElement('input');
+            endDate.type = "date";
+            endDate.value = todo.endDate;
+
+            wrapper.innerHTML = '';
+            const buttonsElementEdit = document.createElement('div');
+            buttonsElementEdit.classList.add('button-view');
+            const textViewElementEdit = document.createElement('div');
+            textViewElementEdit.classList.add('text-view');
+
+            const updateButton = document.createElement('button');
+            updateButton.textContent = 'Update';
+            updateButton.classList.add('update-button');
+            updateButton.addEventListener('click', () => editTodo(todo.id, {
+                title: editInput.value,
+                description: editDescription.value,
+                endDate: endDate.value,
+            }));
+
+            const cancelButton = document.createElement('button');
+            cancelButton.textContent = 'Cancel';
+            cancelButton.classList.add('cancel-button');
+            cancelButton.addEventListener('click', () => renderTodos());
+
+            textViewElementEdit.appendChild(editInput);
+            textViewElementEdit.appendChild(editDescription);
+            textViewElementEdit.appendChild(endDate);
+            buttonsElementEdit.appendChild(updateButton);
+            buttonsElementEdit.appendChild(cancelButton);
+
+            wrapper.appendChild(textViewElementEdit);
+            wrapper.appendChild(buttonsElementEdit);
+
+        });
+
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.classList.add('delete-button');
+        deleteButton.addEventListener('click', () => deleteTodo(todo.id));
+
+        if (todo.status === 'todo') {
+            const doingButton = document.createElement('button');
+            doingButton.textContent = 'Todo Doing';
+            doingButton.classList.add('doing-todo-button');
+            doingButton.addEventListener('click', () => doingTodo(todo.id));
+            buttonsElement.appendChild(doingButton);
+        }
+
+        if (todo.status === 'todo' || todo.status === 'doing') {
+            const completeButton = document.createElement('button');
+            completeButton.textContent = 'Todo Complete';
+            completeButton.classList.add('complete-todo-button');
+            completeButton.addEventListener('click', () => completeTodo(todo.id));
+            buttonsElement.appendChild(completeButton);
+        }
+
+        buttonsElement.appendChild(editButton);
+        buttonsElement.appendChild(deleteButton);
+
+        wrapper.appendChild(textViewElement);
+        wrapper.appendChild(buttonsElement);
+        todoItem.appendChild(wrapper)
+        mainList.appendChild(todoItem);
+    });
+}
+
+const renderTodos = () => {
+    const todoList = document.querySelector('.todo-list');
+    todoList.innerHTML = '';
+
+    const todoListDoing = document.querySelector('.todo-list-doing');
+    todoListDoing.innerHTML = '';
+
+    const todoListDone = document.querySelector('.todo-list-done');
+    todoListDone.innerHTML = '';
+
+    renderList(todos.filter(z => z.status === 'todo'), todoList);
+    renderList(todos.filter(z => z.status === 'doing'), todoListDoing);
+    renderList(todos.filter(z => z.status === 'done'), todoListDone);
+
+}
+
+renderTodos();

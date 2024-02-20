@@ -58,6 +58,18 @@ const doingTodo = (uid) => {
     renderTodos();
 }
 
+const deleteTodo = (uid) => {
+    const index = todos.findIndex(x => x.id === uid);
+    todos.splice(index, 1);
+    renderTodos();
+}
+
+const editTodo = (uid, updatedTodo) => {
+    const index = todos.findIndex(x => x.id === uid);
+    todos[index] = { ...todos[index], ...updatedTodo };
+    renderTodos();
+}
+
 const renderList = (list, mainList) => {
     list.forEach((todo) => {
         const todoItem = document.createElement('li');

@@ -17,6 +17,8 @@ let todos = [
     }
 ];
 
+let sort = null;
+
 const addTodo = (title, description, endDate) => {
     const priority = Math.floor(Math.random() * 3) + 1;
     const todo = { id: todos.length + 1, title, description, endDate, status: 'todo', priority: priority };
@@ -69,6 +71,14 @@ const editTodo = (uid, updatedTodo) => {
     todos[index] = { ...todos[index], ...updatedTodo };
     renderTodos();
 }
+
+const sortTodosByEndDate = (e) => {
+    sort = e.target.value || null;
+    renderTodos();
+}
+
+const sortSelect = document.getElementById('sortSelect');
+sortSelect.addEventListener('change', sortTodosByEndDate);
 
 const renderList = (list, mainList) => {
     list.forEach((todo) => {
@@ -194,9 +204,27 @@ const renderTodos = () => {
     const todoListDone = document.querySelector('.todo-list-done');
     todoListDone.innerHTML = '';
 
-    renderList(todos.filter(z => z.status === 'todo'), todoList);
-    renderList(todos.filter(z => z.status === 'doing'), todoListDoing);
-    renderList(todos.filter(z => z.status === 'done'), todoListDone);
+    const dataSort = [...todos];
+
+    if (sort === 'ascDate') {
+        dataSort.sort((a, b) => new Date(a.endDate) - new Date(b.endDate));
+    }
+
+    if (sort === 'decDate') {
+        dataSort.sort((a, b) => new Date(b.endDate) - new Date(a.endDate));
+    }
+
+    if(sort === 'decPriority'){
+        dataSort.sort((a, b) => b.priority - a.priority);
+    }
+
+    if(sort === 'ascPriority'){
+        dataSort.sort((a, b) => a.priority - b.priority);
+    }
+
+    renderList(dataSort.filter(z => z.status === 'todo'), todoList);
+    renderList(dataSort.filter(z => z.status === 'doing'), todoListDoing);
+    renderList(dataSort.filter(z => z.status === 'done'), todoListDone);
 
 }
 

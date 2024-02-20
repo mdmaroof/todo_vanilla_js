@@ -13,7 +13,23 @@ let todos = [
         "description": "second description",
         "endDate": "2024-02-28",
         "status": "todo",
+        "priority": 1
+    },
+    {
+        "id": 3,
+        "title": "third title",
+        "description": "third description",
+        "endDate": "2024-02-22",
+        "status": "done",
         "priority": 2
+    },
+    {
+        "id": 4,
+        "title": "fourth title",
+        "description": "fourth description",
+        "endDate": "2024-02-21",
+        "status": "doing",
+        "priority": 3
     }
 ];
 
